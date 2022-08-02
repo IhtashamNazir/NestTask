@@ -1,0 +1,17 @@
+FROM node:lts-alpine
+LABEL maintainer "ack@baibay.id"
+
+WORKDIR /app
+EXPOSE 3006
+
+COPY package.json yarn.lock ./
+RUN touch .env
+RUN npm install -g npm@8.15.1
+RUN npm config set fetch-retry-mintimeout 20000
+RUN npm config set fetch-retry-maxtimeout 220000
+RUN set -x && npm install --legacy-peer-deps
+RUN npm -g add @nestjs/cli
+
+COPY . .
+
+CMD [ "npm", "run", "start:dev" ]
